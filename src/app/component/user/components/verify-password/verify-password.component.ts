@@ -38,7 +38,6 @@ export class VerifyPasswordComponent {
         (verifyResult == resetpassword)
         ? this.router.navigate([URL_ROUTES.newpassword])
         : this.messageService.openSnackBar('Something wrong. Try again', '×', PanelStyle.error, false)
-        
       }
     ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
   }

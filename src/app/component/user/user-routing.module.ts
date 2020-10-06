@@ -21,8 +21,7 @@ const routes: Routes = [
   { path: URL_ROUTES.login, component: LoginComponent, ...canActivate(redirectLoggedInToDashboard) },
   { path: URL_ROUTES.logout, component: LogoutComponent, ...canActivate(redirectUnauthorizedToLogin) },
   { path: URL_ROUTES.resetpassword, component: ResetPasswordComponent, ...canActivate(redirectLoggedInToDashboard) },
-  { path: URL_ROUTES.verifypassword, component: VerifyPasswordComponent, ...canActivate(redirectLoggedInToDashboard) },
-  { path: 'auth/action', component: VerifyPasswordComponent },
+  { path: URL_ROUTES.verifypassword, component: VerifyPasswordComponent },
   { path: URL_ROUTES.newpassword, component: NewPasswordComponent, ...canActivate(redirectLoggedInToDashboard) },
 ];
 
