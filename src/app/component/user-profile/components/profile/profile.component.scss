@@ -1,0 +1,118 @@
+section {
+    color: #33475b;
+
+    .title-container {
+        h1 {
+            padding: 24px 48px;
+            font-weight: 400;
+            font-size: 28px;
+        }
+    }
+
+    .profile-container {
+        display: flex;
+        justify-content: center;
+
+
+        .profile-info {
+            font-family: Avenir Next W02, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+
+
+            h2 {
+                font-weight: 400;
+                font-size: 24px;
+                margin: 3% 3% 3% 0;
+
+            }
+
+            .profile-info-container {
+                display: flex;
+                margin-left: 10px;
+
+                mat-dialog-container {
+                    width: 450px;
+                }
+
+                h3 {
+                    font-weight: 400;
+                    font-size: 18px;
+                }
+
+                .small-icon {
+                    color: #00a4bd;
+                    font-size: 17px;
+                    margin: 4px 7px;
+                    cursor: pointer;
+                }
+
+                .profile-image-container {
+                    min-width: 72px;
+                    min-height: 72px;
+                    border-radius: 50%;
+                    position: relative;
+                    margin-right: 20px;
+                    background-size: contain;
+
+                    mat-icon {
+                        visibility: hidden;
+                        display: flex;
+                        position: absolute;
+                        font-size: 30px;
+                        border-radius: 50%;
+                        background: rgb(81, 111, 144);
+                        color: rgb(255, 255, 255);
+                        align-items: center;
+                        justify-content: center;
+                        height: 72px;
+                        width: 72px;
+                        bottom: 0;
+                    }
+
+                    &:hover > mat-icon {
+                        visibility: visible;
+                        cursor: pointer;
+                        opacity: 0.7;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.form-control {
+    font-weight: 400;
+    font-size: 14px;
+    color: #33475b;
+    line-height: 24px;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+
+    label {
+        margin-left: 8px;
+    }
+
+    input {
+        padding: 9px 10px;
+        border-radius: 3px;
+        border: 1px solid #cbd6e2;
+        font-size: 16px;
+        transition: all .15s ease-out;
+        background-color: #f5f8fa;
+        color: #33475b;
+        height: 10px;
+        line-height: 22px;
+        margin: 8px;
+    }
+
+    .button-actions {
+        margin-top: 20px;
+
+        button {
+            margin: 0 8px;
+        }
+    }
+}

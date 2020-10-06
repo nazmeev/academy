@@ -1,0 +1,59 @@
+<section>
+    <div class="title-container">
+        <h1>Settings</h1>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profile-container">
+
+        <div class="profile-info">
+            <h2>Across all accounts</h2>
+            <div class="profile-info-container">
+                <div [style.backgroundImage]="'url('+userData?.photoURL+')'" class="profile-image-container">
+                    <mat-menu #editImg="matMenu" [hasBackdrop]="false" class="my-class">
+                        <button mat-menu-item type="button" (click)="openModal()">Edit image</button>
+                        <button mat-menu-item type="button" (click)="setDefaultImg()">Remove image</button>
+                    </mat-menu>
+                    <mat-icon [matMenuTriggerFor]="editImg">edit</mat-icon>
+                </div>
+                <h3>{{userData.displayName}}</h3>
+                <mat-icon #displayNameMenuTrigger (click)="patchEditForm()" [matMenuTriggerFor]="edit" class="small-icon">edit</mat-icon>
+            </div>
+            <mat-menu #edit="matMenu" [hasBackdrop]="false" class="my-class">
+                <form (click)="$event.preventDefault(); $event.stopPropagation()"
+                      (keydown.tab)="$event.stopPropagation()"
+                      [formGroup]="editUserForm"
+                      class="form-control">
+                    <label for="firstName">First Name</label>
+                    <input formControlName="firstName"
+                           id="firstName"
+                           matInput
+                           placeholder="First Name"
+                           type="text">
+                    <label for="lastName">Last Name</label>
+                    <input formControlName="lastName"
+                           id="lastName"
+                           matInput
+                           placeholder="Last Name"
+                           type="text">
+                    <div class="button-actions">
+                        <button
+                            (click)="onDisplayNameChange()"
+                            [disabled]="editUserForm.invalid"
+                            class="modal-save"
+                            color="warn"
+                            mat-flat-button
+                        >Save
+                        </button>
+                        <button
+                            (click)="closeEdit()"
+                            class="modal-cancel"
+                            color="warn"
+                            mat-stroked-button
+                        >Cancel
+                        </button>
+                    </div>
+                </form>
+            </mat-menu>
+        </div>
+    </div>
+</section>

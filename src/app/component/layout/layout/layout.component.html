@@ -1,0 +1,52 @@
+<mat-toolbar>
+  <a href="#" class="links">Lid list</a>
+  <a href="#" class="links">Column list</a>
+  <a class="links" href="/dash">Dashboard</a>
+
+  <span class="right">
+    <button mat-icon-button class="control" aria-label="icons">
+      <mat-icon>search</mat-icon>
+    </button>
+    <button mat-icon-button class="control" aria-label="icons">
+      <mat-icon>store</mat-icon>
+    </button>
+    <button mat-icon-button class="control" aria-label="icons">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <button mat-icon-button class="control" aria-label="icons">
+      <mat-icon>notifications</mat-icon>
+    </button>
+  </span>
+  <mat-divider [vertical]="true" class="vertical divider"></mat-divider>
+
+  <button mat-icon-button class="info" [matMenuTriggerFor]="menu" #menuTrigger="matMenuTrigger"
+    (mouseclick)="menuTrigger.openMenu()">
+    <mat-icon class="person" *ngIf="!userData.photoURL; else image">person</mat-icon>
+    <ng-template #image>
+      <mat-icon class="person"><img src="{{ userData.photoURL }}" alt="{{ userData.displayName }}"></mat-icon>
+    </ng-template>
+    <mat-icon class="arrow">arrow_drop_down</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu" [overlapTrigger]="false" class="user-menu">
+    <a mat-menu-item class="list" href="user-preferences">
+      <mat-icon class="person" *ngIf="!userData.photoURL; else image">person</mat-icon>
+      <ng-template #image>
+        <mat-icon class="person"><img src="{{ userData.photoURL }}" alt="{{ userData.displayName }}"></mat-icon>
+      </ng-template>
+
+      <div class="pers-info">
+        <div class="name">{{userData.displayName}}</div>
+        <div class="email">{{userData.email}}</div>
+        <div class="prof">Profile & Preferences</div>
+      </div>
+    </a>
+    <mat-divider class="divider"></mat-divider>
+    <div mat-menu-item class="company">{{userData.companyName}}
+    </div>
+    <mat-divider class="divider"></mat-divider>
+    <a mat-menu-item class="out" href="/logout">Sign out
+    </a>
+  </mat-menu>
+</mat-toolbar>
+<router-outlet></router-outlet>

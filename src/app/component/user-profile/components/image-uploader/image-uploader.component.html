@@ -1,0 +1,61 @@
+<div class="modal-container">
+    <div class="modal-title">
+        <h1>Choose and crop an image</h1>
+        <mat-icon (click)="closeModal()">clear</mat-icon>
+    </div>
+    <div *ngIf="ready" class="change-file">
+        <button mat-stroked-button type="button">Change file</button>
+        <mat-icon>check_circle</mat-icon>
+        <span>{{ showImgName }}</span>
+    </div>
+    <ly-img-cropper
+        (cleaned)="ready = false"
+        (cropped)="onCropped($event)"
+        (error)="onError($event)"
+        (loaded)="onLoaded($event)"
+        (minScale)="minScale = $event"
+        (ready)="ready = true"
+        [(scale)]="scale"
+        [config]="myConfig"
+        [ngClass]="[classes.cropper]"
+    >
+        <div>
+            <mat-icon class="insert-icon">insert_photo</mat-icon>
+        </div>
+        <div [lyDisplay]="'flex'">
+            <button (click)="_fileInput.click()"
+                    class="select-button"
+                    mat-stroked-button
+                    type="button">Select file
+            </button>
+            <!-- Hidden input -->
+            <input #_fileInput
+                   (change)="cropper.selectInputEvent($event)"
+                   accept="image/*" hidden type="file">
+        </div>
+    </ly-img-cropper>
+
+    <div *ngIf="ready" [className]="classes.sliderContainer">
+        <ly-slider
+            (input)="scale = $event.value"
+            [(ngModel)]="scale"
+            [max]="1"
+            [min]="minScale"
+            [thumbVisible]="false"
+            step="0.000001"></ly-slider>
+    </div>
+
+    <button (click)="cropper.crop()"
+            [disabled]="!ready"
+            class="modal-save"
+            color="warn"
+            mat-flat-button
+    >Save
+    </button>
+    <button (click)="closeModal()"
+            class="modal-cancel"
+            color="warn"
+            mat-stroked-button
+    >Cancel
+    </button>
+</div>

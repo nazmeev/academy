@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "inventorsoft-academy-crm-45f71": {
+      "hosting": {
+        "crmAlpha": [
+          "inventorsoft-academy-crm-45f71"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "inventorsoft-academy-crm-45f71"
+  }
+}

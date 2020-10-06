@@ -1,0 +1,47 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1>Create your free account</h1>
+    <p>Free forever. Or you can <a mat-button routerLink="/login">Log In</a></p>
+  </div>
+  <div>
+    <button mat-button (click)="signUpGoogle()" type="button" class="google-button"> Sign Up with Google</button>
+  </div>
+  <div class="separator-block">
+    <span>OR</span>
+  </div>
+  <div class="">
+    <form [formGroup]="signupForm" autocomplete="off" (submit)="signUp()">
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label> Email </mat-label>
+        <input matInput formControlName="email" type="email">
+        <mat-error *ngIf="email.touched && email.invalid">
+          <span *ngIf="email.errors.required">This field is required.</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label> Password </mat-label>
+        <input matInput formControlName="password" type="password">
+        <mat-error *ngIf="password.touched && password.invalid">
+          <span *ngIf="password.errors.required">This field is required.</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label> Display name </mat-label>
+        <input matInput formControlName="displayName" type="text">
+        <mat-error *ngIf="displayName.touched && displayName.invalid">
+          <span *ngIf="displayName.errors.required">This field is required.</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="form-field" appearance="outline">
+        <mat-label> Company name </mat-label>
+        <input matInput formControlName="companyName" type="text">
+        <mat-error *ngIf="companyName.touched && companyName.invalid">
+          <span *ngIf="companyName.errors.required">This field is required.</span>
+        </mat-error>
+      </mat-form-field>
+      <div class="form-footer">
+        <button [disabled]="signupForm.invalid" mat-raised-button color="warn" type="submit" class="form-submit">Sign Up</button>
+      </div>
+    </form>
+  </div>
+</div>
