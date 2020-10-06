@@ -1,52 +1,45 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PanelStyle } from '../../../../enum/style-messages';
 import { URL_ROUTES } from '../../../../model/url-routes';
 import { MessageService } from '../../../../service/message.service';
-import { UserService } from '../../../../service/user/user.service';
 
 @Component({
   selector: 'app-verify-password',
-  templateUrl: './verify-password.component.html',
-  styleUrls: ['../../../../../assets/scss/user.module.scss']
+  templateUrl: './verify-password.component.html'
 })
 export class VerifyPasswordComponent {
-  verified: boolean = false
-  verifyPasswordForm: FormGroup
+  action: string
+  code: string
 
   constructor(
-    private formBuilder: FormBuilder,
-    private userService: UserService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private activateRoute: ActivatedRoute,
+    private firebaseAuth: AngularFireAuth
   ) {
-    this.verifyPasswordForm = this.formBuilder.group({
-      code: ['', Validators.required]
-    })
-  }
 
-  get code() {
-    return this.verifyPasswordForm.get('code')
-  }
-
-  verifyPassword() {
-    if (this.verifyPasswordForm.valid) {
-      const code = this.verifyPasswordForm.value.code
-      
-      this.userService.verifyPassword(code).then(
-        verifyResult => {
-          if(verifyResult == this.userService.verifiedEmail){
-            this.router.navigate([URL_ROUTES.newpassword])
-          }else{
-            this.messageService.openSnackBar('Something wrong. Try again', '×', PanelStyle.error, false)
-          }
-        }
-      ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false)
-    )
-    } else {
-      this.messageService.openSnackBar('Login form no valid', '×', PanelStyle.error, false)
+    this.action = activateRoute.snapshot.queryParams.mode
+    this.code = activateRoute.snapshot.queryParams.oobCode
+    
+    if(this.action == 'resetPassword' && this.code){
+      this.verifyPassword()
     }
+    
   }
 
+  verifyPassword(){
+    this.firebaseAuth.verifyPasswordResetCode(this.code).then(
+      verifyResult => {
+        localStorage.setItem('resetcode', this.code)
+        let resetpassword = localStorage.getItem('resetpassword');
+
+        (verifyResult == resetpassword)
+        ? this.router.navigate([URL_ROUTES.newpassword])
+        : this.messageService.openSnackBar('Something wrong. Try again', '×', PanelStyle.error, false)
+        
+      }
+    ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
+  }
 }

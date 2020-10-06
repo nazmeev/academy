@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PanelStyle } from '../../../../enum/style-messages';
 import { URL_ROUTES } from '../../../../model/url-routes';
 import { MessageService } from '../../../../service/message.service';
-import { UserService } from '../../../../service/user/user.service';
 
 @Component({
   selector: 'app-new-password',
@@ -15,13 +15,16 @@ export class NewPasswordComponent {
   newPasswordForm: FormGroup
 
   constructor(
-    private userService: UserService,
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private firebaseAuth: AngularFireAuth
   ) {
     this.newPasswordForm = this.formBuilder.group({
-      password: ['', [Validators.required]]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6)
+      ]]
     })
   }
 
@@ -30,17 +33,19 @@ export class NewPasswordComponent {
   }
 
   newPassword() {
-    if (this.newPasswordForm.valid) {
-      const password = this.newPasswordForm.value.password
-      
-      this.userService.sendNewPassword(password).then(
-        () => {
-          this.router.navigate([URL_ROUTES.login]).then(
-            () => this.messageService.openSnackBar('Log In', '×', PanelStyle.success)
-          )
-        }
-      )
-    } else this.messageService.openSnackBar('Login form no valid', '×', PanelStyle.error, false)
+    const verifyCode = localStorage.getItem('resetcode')
+    const password = this.newPasswordForm.value.password
+
+    this.firebaseAuth.confirmPasswordReset(verifyCode, password).then(
+      () => {
+        localStorage.removeItem('resetcode')
+        localStorage.removeItem('resetpassword')
+
+        this.router.navigate([URL_ROUTES.login]).then(
+          () => this.messageService.openSnackBar('Log In', '×', PanelStyle.success)
+        )
+      }
+    ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
   }
 
 }
