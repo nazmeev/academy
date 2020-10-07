@@ -26,7 +26,7 @@ export class SignupComponent {
   ) {
     this.signupForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       displayName: ['', Validators.required],
       companyName: ['', Validators.required]
     })
@@ -47,8 +47,7 @@ export class SignupComponent {
 
   signUp() {
     const { email, password, displayName, companyName } = this.signupForm.value
-    const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/inventorsoft-academy-crm-45f71.appspot.com/o/uploads%2Fdefault?alt=media&token=e7a00e02-b3ab-4b97-8ad8-07f44954c808'
-
+    
     this.firebaseAuth.createUserWithEmailAndPassword(email, password)
       .then(createdUser => {
         const registeredUser = this.userService.createUserInstance({
@@ -56,7 +55,7 @@ export class SignupComponent {
           email: email,
           displayName: displayName,
           companyName: companyName,
-          photoURL: defaultPhotoUrl
+          photoURL: null
         })
 
         this.cloudService.setDocDataByID(registeredUser.uid, { ...registeredUser }, 'users').then(

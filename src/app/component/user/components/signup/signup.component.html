@@ -23,6 +23,7 @@
         <input matInput formControlName="password" type="password">
         <mat-error *ngIf="password.touched && password.invalid">
           <span *ngIf="password.errors.required">This field is required.</span>
+          <span *ngIf="password.errors.minlength">Minimum {{ password.errors.minlength.requiredLength }} characters required</span>
         </mat-error>
       </mat-form-field>
       <mat-form-field class="form-field" appearance="outline">

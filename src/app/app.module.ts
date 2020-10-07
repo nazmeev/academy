@@ -12,7 +12,7 @@ import { IMAGE_UPLOADER_PROVIDERS } from './component/user-profile/components/im
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,

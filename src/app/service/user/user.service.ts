@@ -18,7 +18,15 @@ export class UserService {
     localStorage.removeItem('user')
   }
 
-  createUserInstance({ uid, email, displayName, companyName = '', photoURL, fields = availableFields }: User) {
+  createUserInstance(
+    {
+      uid,
+      email,
+      displayName,
+      companyName = '',
+      photoURL = 'https://firebasestorage.googleapis.com/v0/b/inventorsoft-academy-crm-45f71.appspot.com/o/uploads%2Fdefault?alt=media&token=e7a00e02-b3ab-4b97-8ad8-07f44954c808',
+      fields = availableFields
+    }: User) {
     return new User(
       displayName,
       companyName,

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './component/layout/layout/layout.component';
 import { URL_ROUTES } from './model/url-routes';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
     {
@@ -22,7 +23,8 @@ const routes: Routes = [
     {
         path: 'fields',
         loadChildren: () => import('./component/dynamic-fields/dynamic-fields.module').then(m => m.DynamicFieldsModule)
-    }
+    },
+    {path: '**', component:  NotFoundComponent}
 ];
 
 @NgModule({

@@ -21,10 +21,7 @@ export class NewPasswordComponent {
     private firebaseAuth: AngularFireAuth
   ) {
     this.newPasswordForm = this.formBuilder.group({
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6)
-      ]]
+      password: ['', [Validators.required, Validators.minLength(6)]]
     })
   }
 
