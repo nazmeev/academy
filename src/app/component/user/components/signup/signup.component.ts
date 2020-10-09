@@ -7,6 +7,10 @@ import { URL_ROUTES } from '../../../../model/url-routes';
 import { CloudService, UserService } from '../../../../service';
 import { MessageService } from '../../../../service/message.service';
 import { auth } from 'firebase';
+import { User } from '..';
+import { environment } from '../../../../../environments/environment';
+import { availableFields } from '../../../../utils/dynamic-fields.utils';
+import { setLocalStorage } from '../../../../utils/localstorage.utils';
 
 @Component({
   selector: 'app-signup',
@@ -18,7 +22,6 @@ export class SignupComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService,
     private cloudService: CloudService,
     private router: Router,
     private messageService: MessageService,
@@ -47,20 +50,21 @@ export class SignupComponent {
 
   signUp() {
     const { email, password, displayName, companyName } = this.signupForm.value
-    
+
     this.firebaseAuth.createUserWithEmailAndPassword(email, password)
       .then(createdUser => {
-        const registeredUser = this.userService.createUserInstance({
-          uid: createdUser.user.uid,
-          email: email,
-          displayName: displayName,
-          companyName: companyName,
-          photoURL: null
-        })
+        const registeredUser = new User(
+          displayName,
+          companyName,
+          environment.defaultPhotoURL,
+          email,
+          createdUser.user.uid,
+          availableFields
+        )
 
         this.cloudService.setDocDataByID(registeredUser.uid, { ...registeredUser }, 'users').then(
           () => {
-            this.userService.setLocalStorage(JSON.stringify(registeredUser))
+            setLocalStorage('user', JSON.stringify(registeredUser))
             this.router.navigate([URL_ROUTES.dashboard]).then(
               () => this.messageService.openSnackBar('Registered', '×', PanelStyle.success)
             )
@@ -72,19 +76,21 @@ export class SignupComponent {
 
   signUpGoogle() {
     const provider = new auth.GoogleAuthProvider()
-    
+
     this.firebaseAuth.signInWithPopup(provider).then(
       userGoogle => {
-        const registeredUser = this.userService.createUserInstance({
-          uid: userGoogle.user.uid,
-          email: userGoogle.user.email,
-          displayName: userGoogle.user.displayName,
-          photoURL: userGoogle.user.photoURL
-        })
+        const registeredUser = new User(
+          userGoogle.user.displayName,
+          null,
+          userGoogle.user.photoURL,
+          userGoogle.user.email,
+          userGoogle.user.uid,
+          availableFields
+        )
 
         this.cloudService.setDocDataByID(registeredUser.uid, { ...registeredUser }, 'users').then(
           () => {
-            this.userService.setLocalStorage(JSON.stringify(registeredUser))
+            setLocalStorage('user', JSON.stringify(registeredUser))
             this.router.navigate([URL_ROUTES.dashboard]).then(
               () => this.messageService.openSnackBar('Registered', '×', PanelStyle.success)
             )

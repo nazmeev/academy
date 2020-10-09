@@ -6,8 +6,11 @@ import { auth } from 'firebase';
 import { PanelStyle } from '../../../../enum/style-messages';
 import { URL_ROUTES } from '../../../../model/url-routes';
 import { CloudService } from '../../../../service/cloud.service';
-import { UserService } from '../../../../service/user/user.service';
 import { MessageService } from '../../../../service/message.service';
+import { setLocalStorage } from '../../../../utils/localstorage.utils';
+import { User } from '..';
+import { availableFields } from '../../../../utils/dynamic-fields.utils';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +22,6 @@ export class LoginComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService,
     private router: Router,
     private messageService: MessageService,
     private cloudService: CloudService,
@@ -46,28 +48,31 @@ export class LoginComponent {
         this.cloudService.getDataById(signedInUser.user.uid, 'users').
           subscribe(userData => {
             if (userData) {
-              this.userService.setLocalStorage(JSON.stringify(userData))
+              setLocalStorage('user', JSON.stringify(userData))
               this.router.navigate([URL_ROUTES.dashboard]).then(
                 () => this.messageService.openSnackBar('Logged in', '×', PanelStyle.success)
-              )
-            } else {
-              const signedInUserInfo = this.userService.createUserInstance({
-                uid: signedInUser.user.uid,
-                email: signedInUser.user.email,
-                displayName: null,
-                photoURL: null
-              })
-              this.cloudService.setDocDataByID(signedInUserInfo.uid, { ...signedInUserInfo }, 'users').then(
-                () => {
-                  this.userService.setLocalStorage(JSON.stringify(signedInUserInfo))
-                  this.router.navigate([URL_ROUTES.dashboard]).then(
-                    () => this.messageService.openSnackBar('Information changed', '×', PanelStyle.success)
-                  )
-                }
-              ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
+                )
+              } else {
+                const signedInUserInfo = new User(
+                  null,
+                  null,
+                  environment.defaultPhotoURL,
+                  signedInUser.user.email,
+                  signedInUser.user.uid,
+                  availableFields
+                )
+              
+                this.cloudService.setDocDataByID(signedInUserInfo.uid, { ...signedInUserInfo }, 'users').then(
+                  () => {
+                    setLocalStorage('user', JSON.stringify(signedInUserInfo))
+                    this.router.navigate([URL_ROUTES.dashboard]).then(
+                      () => this.messageService.openSnackBar('Information changed', '×', PanelStyle.success)
+                    )
+                  }
+                ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
+              }
             }
-          }
-        )
+          )
       }
     ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
   }
@@ -79,20 +84,22 @@ export class LoginComponent {
       userGoogle => {
         this.cloudService.getDataById(userGoogle.user.uid, 'users').subscribe(userData => {
           if (userData) {
-            this.userService.setLocalStorage(JSON.stringify(userData))
+            setLocalStorage('user', JSON.stringify(userData))
             this.router.navigate([URL_ROUTES.dashboard]).then(
               () => this.messageService.openSnackBar('Logged in by Google', '×', PanelStyle.success)
             )
           } else {
-            const registeredUser = this.userService.createUserInstance({
-              uid: userGoogle.user.uid,
-              email: userGoogle.user.email,
-              displayName: userGoogle.user.displayName,
-              photoURL: userGoogle.user.photoURL
-            })
+            const registeredUser = new User(
+              userGoogle.user.displayName,
+              null,
+              userGoogle.user.photoURL,
+              userGoogle.user.email,
+              userGoogle.user.uid,
+              availableFields
+            )
             this.cloudService.setDocDataByID(registeredUser.uid, { ...registeredUser }, 'users').then(
               () => {
-                this.userService.setLocalStorage(JSON.stringify(registeredUser))
+                setLocalStorage('user', JSON.stringify(registeredUser))
                 this.router.navigate([URL_ROUTES.dashboard]).then(
                   () => this.messageService.openSnackBar('Registered by Google', '×', PanelStyle.success)
                 )
@@ -103,5 +110,4 @@ export class LoginComponent {
       }
     ).catch(error => this.messageService.openSnackBar(error.message, '×', PanelStyle.error, false))
   }
-
 }

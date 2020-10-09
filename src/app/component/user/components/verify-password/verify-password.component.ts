@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserActions } from '../../../../enum/user-actions';
 import { PanelStyle } from '../../../../enum/style-messages';
 import { URL_ROUTES } from '../../../../model/url-routes';
 import { MessageService } from '../../../../service/message.service';
+import { getLocalStorage, setLocalStorage } from '../../../../utils/localstorage.utils';
 
 @Component({
   selector: 'app-verify-password',
@@ -19,21 +21,20 @@ export class VerifyPasswordComponent {
     private activateRoute: ActivatedRoute,
     private firebaseAuth: AngularFireAuth
   ) {
-
-    this.action = activateRoute.snapshot.queryParams.mode
-    this.code = activateRoute.snapshot.queryParams.oobCode
+    const params = activateRoute.snapshot.queryParams
+    this.action = params.mode
+    this.code = params.oobCode
     
-    if(this.action == 'resetPassword' && this.code){
+    if(this.action == UserActions.resetPassword && this.code){
       this.verifyPassword()
     }
-    
   }
 
   verifyPassword(){
     this.firebaseAuth.verifyPasswordResetCode(this.code).then(
       verifyResult => {
-        localStorage.setItem('resetcode', this.code)
-        let resetpassword = localStorage.getItem('resetpassword');
+        setLocalStorage('resetcode', this.code)
+        let resetpassword = getLocalStorage('resetpassword');
 
         (verifyResult == resetpassword)
         ? this.router.navigate([URL_ROUTES.newpassword])

@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent, ...canActivate(redirectUnauthorizedToLogin) },
+  { path: '**', component:  DashboardComponent}
 ];
 
 @NgModule({

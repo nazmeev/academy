@@ -32,13 +32,13 @@ export class UserDataService {
     }
 
     getParsedUserData(): User | null {
-        const userData = this.userService.getLocalStorage();
+        const userData = this.userService.getLocalStorage('user');
         return userData ? JSON.parse(userData) : null;
     }
 
     saveUserToStorage(userData: User) {
         if (userData) {
-            this.userService.setLocalStorage(JSON.stringify(userData));
+            this.userService.setLocalStorage('user', JSON.stringify(userData));
         }
     }
 }

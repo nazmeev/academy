@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { PanelStyle } from '../../../../enum/style-messages';
 import { URL_ROUTES } from '../../../../model/url-routes';
 import { MessageService } from '../../../../service/message.service';
+import { getLocalStorage, removeLocalStorage } from '../../../../utils/localstorage.utils';
 
 @Component({
   selector: 'app-new-password',
@@ -30,13 +31,13 @@ export class NewPasswordComponent {
   }
 
   newPassword() {
-    const verifyCode = localStorage.getItem('resetcode')
+    const verifyCode = getLocalStorage('resetcode')
     const password = this.newPasswordForm.value.password
 
     this.firebaseAuth.confirmPasswordReset(verifyCode, password).then(
       () => {
-        localStorage.removeItem('resetcode')
-        localStorage.removeItem('resetpassword')
+        removeLocalStorage('resetcode')
+        removeLocalStorage('resetpassword')
 
         this.router.navigate([URL_ROUTES.login]).then(
           () => this.messageService.openSnackBar('Log In', '×', PanelStyle.success)
